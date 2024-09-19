@@ -1,0 +1,38 @@
+name: wizard_world
+description: "A new Flutter project."
+publish_to: 'none'
+
+version: 1.0.0+1
+
+environment:
+  sdk: '>=3.5.2 <4.0.0'
+  flutter: ">=3.24.2"
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  flutter_bloc: ^8.1.6
+  get_it: ^8.0.0-pre-7
+  equatable: ^2.0.5
+  cupertino_icons: ^1.0.8
+  lottie: ^3.1.2
+  http: ^1.2.2
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+  flutter_lints: ^4.0.0
+  bloc_test: ^9.1.7
+
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/lottie/
+    - assets/images/
+
+  fonts:
+    - family: Harry
+      fonts:
+        - asset: assets/fonts/harry/harry.ttf
