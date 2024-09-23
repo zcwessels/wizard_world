@@ -160,24 +160,121 @@ abstract class WizardWorldState extends Equatable {
   /// Creates a new [WizardWorldState] instance.
   const WizardWorldState(this.main);
 
+  List<T> searchItems<T>(List<T>? items, bool Function(T) matcher) {
+    if (items == null) return [];
+    return items.where(matcher).toList();
+  }
+
   /// Searches for wizards based on the [query] and returns the filtered results.
-  List<WWWizard> searchWizards(String query) {
-    return main.wizards?.where((wizard) => wizard.firstName.toLowerCase().contains(query.toLowerCase()) || wizard.lastName.toLowerCase().contains(query.toLowerCase())).toList() ?? [];
+  /// [useFuzzy] enables approximate matching using string similarity.
+  List<WWWizard> searchWizards(String query, {bool useFuzzy = false, double threshold = 0.7}) {
+    final trimmedQuery = query.trim().toLowerCase();
+
+    if (trimmedQuery.isEmpty) {
+      return main.wizards ?? [];
+    }
+
+    return searchItems<WWWizard>(main.wizards, (wizard) {
+      final firstName = wizard.firstName.toLowerCase();
+      final lastName = wizard.lastName.toLowerCase();
+      final fullName = '$firstName $lastName';
+
+      // Exact match
+      if (firstName.contains(trimmedQuery) || lastName.contains(trimmedQuery) || fullName.contains(trimmedQuery)) {
+        return true;
+      }
+
+      // Fuzzy match
+      if (useFuzzy) {
+        final similarityFirst = StringSimilarity.compareTwoStrings(firstName, trimmedQuery);
+        final similarityLast = StringSimilarity.compareTwoStrings(lastName, trimmedQuery);
+        final similarityFull = StringSimilarity.compareTwoStrings(fullName, trimmedQuery);
+        return similarityFirst >= threshold || similarityLast >= threshold || similarityFull >= threshold;
+      }
+
+      return false;
+    });
   }
 
   /// Searches for houses based on the [query] and returns the filtered results.
-  List<WWHouse> searchHouses(String query) {
-    return main.houses?.where((house) => house.name.toLowerCase().contains(query.toLowerCase())).toList() ?? [];
+  /// [useFuzzy] enables approximate matching using string similarity.
+  List<WWHouse> searchHouses(String query, {bool useFuzzy = false, double threshold = 0.7}) {
+    final trimmedQuery = query.trim().toLowerCase();
+
+    if (trimmedQuery.isEmpty) {
+      return main.houses ?? [];
+    }
+
+    return searchItems<WWHouse>(main.houses, (house) {
+      final houseName = house.name.toLowerCase();
+
+      // Exact match
+      if (houseName.contains(trimmedQuery)) {
+        return true;
+      }
+
+      // Fuzzy match
+      if (useFuzzy) {
+        final similarity = StringSimilarity.compareTwoStrings(houseName, trimmedQuery);
+        return similarity >= threshold;
+      }
+
+      return false;
+    });
   }
 
   /// Searches for spells based on the [query] and returns the filtered results.
-  List<WWSpell> searchSpells(String query) {
-    return main.spells?.where((spell) => spell.name.toLowerCase().contains(query.toLowerCase())).toList() ?? [];
+  /// [useFuzzy] enables approximate matching using string similarity.
+  List<WWSpell> searchSpells(String query, {bool useFuzzy = false, double threshold = 0.7}) {
+    final trimmedQuery = query.trim().toLowerCase();
+
+    if (trimmedQuery.isEmpty) {
+      return main.spells ?? [];
+    }
+
+    return searchItems<WWSpell>(main.spells, (spell) {
+      final spellName = spell.name.toLowerCase();
+
+      // Exact match
+      if (spellName.contains(trimmedQuery)) {
+        return true;
+      }
+
+      // Fuzzy match
+      if (useFuzzy) {
+        final similarity = StringSimilarity.compareTwoStrings(spellName, trimmedQuery);
+        return similarity >= threshold;
+      }
+
+      return false;
+    });
   }
 
   /// Searches for elixirs based on the [query] and returns the filtered results.
-  List<WWElixir> searchElixirs(String query) {
-    return main.elixirs?.where((elixir) => elixir.name.toLowerCase().contains(query.toLowerCase())).toList() ?? [];
+  /// [useFuzzy] enables approximate matching using string similarity.
+  List<WWElixir> searchElixirs(String query, {bool useFuzzy = false, double threshold = 0.7}) {
+    final trimmedQuery = query.trim().toLowerCase();
+
+    if (trimmedQuery.isEmpty) {
+      return main.elixirs ?? [];
+    }
+
+    return searchItems<WWElixir>(main.elixirs, (elixir) {
+      final elixirName = elixir.name.toLowerCase();
+
+      // Exact match
+      if (elixirName.contains(trimmedQuery)) {
+        return true;
+      }
+
+      // Fuzzy match
+      if (useFuzzy) {
+        final similarity = StringSimilarity.compareTwoStrings(elixirName, trimmedQuery);
+        return similarity >= threshold;
+      }
+
+      return false;
+    });
   }
 
   @override

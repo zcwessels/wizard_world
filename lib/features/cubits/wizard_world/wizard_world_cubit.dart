@@ -6,6 +6,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:http/http.dart' as http;
+import 'package:string_similarity/string_similarity.dart';
 import 'package:wizard_world/features/core/instance_injection.dart';
 import 'package:wizard_world/features/cubits/screen_controller/types/screen_types.dart';
 import 'types/battle_file.dart';
@@ -178,13 +179,13 @@ class WizardWorldCubit extends Cubit<WizardWorldState> {
       }
       switch (tile) {
         case WWTiles.houses:
-          emit(WWLoaded(state.main.copyWith(filteredHouses: state.searchHouses(query))));
+          emit(WWLoaded(state.main.copyWith(filteredHouses: state.searchHouses(query, useFuzzy: true))));
         case WWTiles.spells:
-          emit(WWLoaded(state.main.copyWith(filteredSpells: state.searchSpells(query))));
+          emit(WWLoaded(state.main.copyWith(filteredSpells: state.searchSpells(query, useFuzzy: true))));
         case WWTiles.wizards:
-          emit(WWLoaded(state.main.copyWith(filteredWizards: state.searchWizards(query))));
+          emit(WWLoaded(state.main.copyWith(filteredWizards: state.searchWizards(query, useFuzzy: true))));
         case WWTiles.elixirs:
-          emit(WWLoaded(state.main.copyWith(filteredElixirs: state.searchElixirs(query))));
+          emit(WWLoaded(state.main.copyWith(filteredElixirs: state.searchElixirs(query, useFuzzy: true))));
       }
     } catch (e, s) {
       emit(WWError(state.main.copyWith(message: (e as dynamic).message.toString()), stackTrace: s.toString()));
